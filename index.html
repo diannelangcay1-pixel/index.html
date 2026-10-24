@@ -1,1 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#eee8ff">
+<meta name="description" content="MindCare: Student Safe Space for emotional wellness">
+<title>MindCare — Student Safe Space</title>
+<style>
+:root {
+  --ink: #302448;
+  --muted: #766c8a;
+  --purple: #7853ce;
+  --lav: #f2edff;
+  --line: #e9e0f8;
+  --white: #fff;
+  --shadow: 0 14px 40px #7964a51c;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Arial, sans-serif;
+  background:
+    radial-gradient(circle at 12% 5%, #f8dffc, transparent 32%),
+    radial-gradient(circle at 90% 30%, #e5e4ff, transparent 38%),
+    #f7f4ff;
+  min-height: 100vh;
+}
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #9472e8;
+  outline-offset: 3px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  max-width: 1550px;
+  margin: auto;
+  min-height: 100vh;
+}
+.sidebar {
+  background: #ffffffd9;
+  border-right: 1px solid #ffffffb0;
+  padding: 25px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.logo {
+  font-size: 23px;
+  font-weight: 850;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  background: #e7d8ff;
+  padding: 10px;
+  border-radius: 17px;
+}
+.nav { display: grid; gap: 8px; }
+.nav button, .mobile-nav button {
+  border: 0;
+  background: transparent;
+  color: #716683;
+  text-align: left;
+  border-radius: 15px;
+  padding: 13px 12px;
+  font-weight: 650;
+}
+.nav button.active, .mobile-nav button.active {
+  background: #e9ddff;
+  color: #5c37ad;
+}
+.main {
+  padding: 28px clamp(16px, 3.3vw, 50px) 95px;
+  min-width: 0;
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  gap: 10px;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  color: #8b6cbb;
+}
+h1 {
+  font-size: clamp(29px, 4vw, 42px);
+  margin: 10px 0;
+}
+h2 { font-size: 23px; margin: 0 0 8px; }
+h3 { margin: 0 0 9px; font-size: 17px; }
+p { line-height: 1.65; }
+.muted { color: var(--muted); }
+.page { display: none; }
+.page.active { display: block; }
+.card {
+  background: #ffffffed;
+  border: 1px solid white;
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.btn {
+  border: 0;
+  border-radius: 15px;
+  padding: 12px 17px;
+  font-weight: 750;
+  background: #eee5ff;
+  color: #6542a8;
+}
+.btn.primary {
+  background: #7956d1;
+  color: white;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.hero {
+  padding: 25px;
+  background: linear-gradient(115deg, #fff, #eee4ff);
+  border-radius: 28px;
+  margin-bottom: 20px;
+}
+.emotion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+.emotion {
+  border: 1px solid #eee7fb;
+  background: white;
+  border-radius: 18px;
+  padding: 15px 8px;
+  color: var(--ink);
+  min-height: 90px;
+}
+.emotion.selected {
+  background: #e9ddff;
+  border-color: #bda5ee;
+}
+.emotion .emoji {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+textarea, input {
+  width: 100%;
+  border: 1px solid #e5dced;
+  border-radius: 15px;
+  background: white;
+  padding: 13px;
+  color: var(--ink);
+}
+textarea { min-height: 130px; resize: vertical; }
+.field { display: block; font-weight: 700; margin: 16px 0 8px; }
+.stack { display: grid; gap: 12px; }
+.entry {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 15px;
+  background: white;
+  overflow-wrap: anywhere;
+}
+.result {
+  margin-top: 20px;
+  background: linear-gradient(130deg, #efe3ff, #fff);
+  border-radius: 22px;
+  padding: 22px;
+}
+[hidden], .hidden { display: none !important; }
+.mobile-nav { display: none; }
+.footer {
+  margin-top: 28px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 760px) {
+  .layout { display: block; }
+  .sidebar { display: none; }
+  .main { padding: 20px 14px 100px; }
+  .grid { grid-template-columns: 1fr; }
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: space-around;
+    padding: 8px;
+    background: #ffffffed;
+    border-top: 1px solid #e8e0f2;
+    z-index: 20;
+  }
+  .mobile-nav button {
+    text-align: center;
+    font-size: 11px;
+    padding: 8px 4px;
+  }
+}
+</style>
+</head>
+  <body>
+<div class="layout">
 
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">💜</span>
+      <span>MindCare</span>
+    </div>
+
+    <p class="muted">YOUR STUDENT SAFE SPACE</p>
+
+    <nav class="nav">
+      <button class="active" data-page="home">🏠 Home</button>
+      <button data-page="checkin">💗 Emotion Check-in</button>
+      <button data-page="journal">📔 Private Journal</button>
+      <button data-page="calm">🌿 Calm Corner</button>
+      <button data-page="about">ℹ️ About MindCare</button>
+      <button data-page="admin">🔐 Admin Dashboard</button>
+    </nav>
+
+    <div style="margin-top:auto" class="muted">
+      Take a breath. You're here. 💜
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <div class="eyebrow">A LITTLE SPACE FOR YOU</div>
+        <h1 id="pageTitle">Welcome to MindCare 💜</h1>
+      </div>
+      <div aria-label="MindCare heart icon"
+           style="font-size:32px">💗</div>
+    </header>
+
+    <!-- HOME -->
+    <section class="page active" id="home">
+      <div class="hero">
+        <div class="eyebrow">YOU MATTER, ALWAYS</div>
+        <h2>You don't have to be okay all the time.</h2>
+        <p class="muted">
+          This is your safe space to pause, reflect, and check in
+          with yourself. Take things one step at a time.
+        </p>
+        <button class="btn primary" data-go="checkin">
+          Check in with myself →
+        </button>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div style="font-size:30px">💗</div>
+          <h3>How are you feeling?</h3>
+          <p class="muted">Give yourself a moment to name your feelings.</p>
+          <button class="btn" data-go="checkin">Start check-in</button>
+        </article>
+
+        <article class="card">
+          <div style="font-size:30px">📔</div>
+          <h3>Your private journal</h3>
+          <p class="muted">Write your thoughts in a private space on this device.</p>
+          <button class="btn" data-go="journal">Open journal</button>
+        </article>
+
+        <article class="card">
+          <div style="font-size:30px">🌿</div>
+          <h3>Calm corner</h3>
+          <p class="muted">Try a gentle breathing exercise when you need a pause.</p>
+          <button class="btn" data-go="calm">Find some calm</button>
+        </article>
+
+        <article class="card">
+          <div style="font-size:30px">✨</div>
+          <h3>A gentle reminder</h3>
+          <p class="muted">
+            Progress doesn't have to be perfect. Small steps still count.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- EMOTION CHECK-IN -->
+    <section class="page" id="checkin">
+      <div class="card">
+        <h2>How are you feeling today?</h2>
+        <p class="muted">Choose the emotion closest to how you feel.</p>
+
+        <div class="emotion-grid" id="emotionChoices">
+          <button class="emotion" data-emotion="Happy">
+            <span class="emoji">😊</span>Happy
+          </button>
+          <button class="emotion" data-emotion="Calm">
+            <span class="emoji">😌</span>Calm
+          </button>
+          <button class="emotion" data-emotion="Sad">
+            <span class="emoji">😔</span>Sad
+          </button>
+          <button class="emotion" data-emotion="Anxious">
+            <span class="emoji">😟</span>Anxious
+          </button>
+          <button class="emotion" data-emotion="Tired">
+            <span class="emoji">😴</span>Tired
+          </button>
+          <button class="emotion" data-emotion="Overwhelmed">
+            <span class="emoji">🥺</span>Overwhelmed
+          </button>
+        </div>
+
+        <label class="field" for="checkinNote">
+          Anything you'd like to reflect on? (Optional)
+        </label>
+        <textarea id="checkinNote"
+          placeholder="You can leave this blank. Avoid writing identifying details."></textarea>
+
+        <p id="checkinMessage" role="status" class="muted"></p>
+        <button class="btn primary" id="saveCheckin">
+          Save my check-in
+        </button>
+      </div>
+
+      <div class="result">
+        <h3>Remember 💜</h3>
+        <p>
+          Your feelings deserve care. You don't need to judge yourself
+          for what you're feeling right now.
+        </p>
+      </div>
+    </section>
+
+    <!-- PRIVATE JOURNAL -->
+    <section class="page" id="journal">
+      <div class="card">
+        <h2>My private journal 📔</h2>
+        <p class="muted">
+          Journal entries on this version stay in this browser's local
+          storage. They are not uploaded to the admin dashboard.
+          This is not encrypted storage, so avoid sensitive details.
+        </p>
+
+        <label class="field" for="journalText">What's on your mind?</label>
+        <textarea id="journalText"
+          placeholder="Write for yourself. Take your time."></textarea>
+
+        <button class="btn primary" id="saveJournal">
+          Save on this device
+        </button>
+        <button class="btn" id="clearJournal">
+          Clear my journal
+        </button>
+
+        <p id="journalMessage" role="status" class="muted"></p>
+        <div id="journalEntries" class="stack"></div>
+      </div>
+    </section>
+
+    <!-- CALM CORNER -->
+    <section class="page" id="calm">
+      <div class="card" style="text-align:center">
+        <div style="font-size:46px">🌿</div>
+        <h2>Let's take a gentle pause</h2>
+        <p class="muted">
+          Breathe naturally and follow the prompts. Stop whenever
+          you feel uncomfortable.
+        </p>
+
+        <div id="breathingCircle"
+          style="width:150px;height:150px;border-radius:50%;
+          background:linear-gradient(135deg,#e6d7ff,#c9e9e5);
+          display:grid;place-items:center;margin:28px auto;
+          transition:transform 4s ease">
+          <strong id="breathingText">Ready?</strong>
+        </div>
+
+        <p id="breathingStatus" role="status" class="muted">
+          Press start when you're ready.
+        </p>
+        <button class="btn primary" id="startBreathing">
+          Start breathing exercise
+        </button>
+        <button class="btn" id="stopBreathing">Stop</button>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="page" id="about">
+      <div class="card">
+        <h2>About MindCare 💜</h2>
+        <p>
+          MindCare is a student wellness space designed to encourage
+          emotional awareness, reflection, and healthy calming habits.
+        </p>
+        <h3>Your privacy matters</h3>
+        <p class="muted">
+          Do not enter your full name, school ID, address, passwords,
+          or other identifying information in wellness activities.
+        </p>
+        <h3>Need support?</h3>
+        <p class="muted">
+          MindCare is not a substitute for professional help. If you're
+          struggling, consider reaching out to a trusted adult, school
+          counselor, or qualified mental health professional.
+        </p>
+      </div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="page" id="admin">
+      <div class="card">
+        <h2>🔐 Admin Dashboard</h2>
+        <p class="muted">
+          Visitor and participant totals will appear here after the
+          secure database and analytics connection is configured.
+        </p>
+
+        <div class="grid">
+          <div class="entry">
+            <p class="muted">Website visits</p>
+            <h2 id="visitorCount">Not connected</h2>
+          </div>
+          <div class="entry">
+            <p class="muted">Participants</p>
+            <h2 id="participantCount">Not connected</h2>
+          </div>
+          <div class="entry">
+            <p class="muted">Emotion check-ins</p>
+            <h2 id="checkinCount">Not connected</h2>
+          </div>
+        </div>
+
+        <p id="adminMessage" role="status" class="muted">
+          Database setup is required before live totals can be shown.
+        </p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      MindCare · Your feelings matter · Take care of yourself 💜
+    </footer>
+  </main>
+</div>
+
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <button class="active" data-page="home">🏠<br>Home</button>
+  <button data-page="checkin">💗<br>Check-in</button>
+  <button data-page="journal">📔<br>Journal</button>
+  <button data-page="calm">🌿<br>Calm</button>
+  <button data-page="admin">🔐<br>Admin</button>
+  </nav>
+    <script>
+"use strict";
+
+/* ===== 1. PAGE NAVIGATION ===== */
+const pageTitles = {
+  home: "Welcome to MindCare 💜",
+  checkin: "Emotion Check-in 💗",
+  journal: "My Private Journal 📔",
+  calm: "Calm Corner 🌿",
+  about: "About MindCare ✨",
+  admin: "Admin Dashboard 🔐"
+};
+
+function showPage(name) {
+  const page = document.getElementById(name);
+  if (!page) return;
+
+  document.querySelectorAll(".page").forEach(section => {
+    section.classList.toggle("active", section.id === name);
+  });
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === name);
+  });
+
+  document.getElementById("pageTitle").textContent =
+    pageTitles[name] || "MindCare";
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+document.querySelectorAll("[data-go]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.go));
+});
+
+
+/* ===== 2. EMOTION CHECK-IN ===== */
+let selectedEmotion = "";
+
+document.querySelectorAll("[data-emotion]").forEach(button => {
+  button.addEventListener("click", () => {
+    selectedEmotion = button.dataset.emotion;
+
+    document.querySelectorAll("[data-emotion]").forEach(item => {
+      item.classList.toggle("selected", item === button);
+      item.setAttribute(
+        "aria-pressed",
+        String(item === button)
+      );
+    });
+
+    document.getElementById("checkinMessage").textContent =
+      "Selected: " + selectedEmotion;
+  });
+});
+
+document.getElementById("saveCheckin").addEventListener("click", () => {
+  const message = document.getElementById("checkinMessage");
+
+  if (!selectedEmotion) {
+    message.textContent = "Please choose an emotion first.";
+    return;
+  }
+
+  try {
+    const key = "mindcare_checkins_v1";
+    const records = JSON.parse(localStorage.getItem(key) || "[]");
+
+    records.push({
+      emotion: selectedEmotion,
+      date: new Date().toISOString()
+    });
+
+    localStorage.setItem(key, JSON.stringify(records));
+
+    message.textContent =
+      "Your check-in was saved on this device. Thank you for checking in. 💜";
+
+    document.getElementById("checkinNote").value = "";
+    selectedEmotion = "";
+
+    document.querySelectorAll("[data-emotion]").forEach(button => {
+      button.classList.remove("selected");
+      button.setAttribute("aria-pressed", "false");
+    });
+  } catch (error) {
+    message.textContent =
+      "Unable to save on this device. Check your browser storage settings.";
+  }
+});
+
+
+/* ===== 3. PRIVATE JOURNAL ===== */
+const journalKey = "mindcare_private_journal_v1";
+
+function renderJournal() {
+  const container = document.getElementById("journalEntries");
+  container.replaceChildren();
+
+  try {
+    const entries = JSON.parse(localStorage.getItem(journalKey) || "[]");
+
+    entries.slice().reverse().forEach(entry => {
+      const article = document.createElement("article");
+      article.className = "entry";
+
+      const date = document.createElement("small");
+      date.className = "muted";
+      date.textContent = new Date(entry.date).toLocaleString();
+
+      const content = document.createElement("p");
+      content.textContent = entry.text;
+
+      article.append(date, content);
+      container.appendChild(article);
+    });
+  } catch (error) {
+    document.getElementById("journalMessage").textContent =
+      "Unable to read journal storage on this device.";
+  }
+}
+
+document.getElementById("saveJournal").addEventListener("click", () => {
+  const input = document.getElementById("journalText");
+  const message = document.getElementById("journalMessage");
+  const text = input.value.trim();
+
+  if (!text) {
+    message.textContent = "Write something before saving.";
+    return;
+  }
+
+  try {
+    const entries = JSON.parse(localStorage.getItem(journalKey) || "[]");
+    entries.push({ text, date: new Date().toISOString() });
+    localStorage.setItem(journalKey, JSON.stringify(entries));
+
+    input.value = "";
+    message.textContent = "Saved on this device. 💜";
+    renderJournal();
+  } catch (error) {
+    message.textContent =
+      "Unable to save. Your browser storage may be full or unavailable.";
+  }
+});
+
+document.getElementById("clearJournal").addEventListener("click", () => {
+  if (!window.confirm("Clear all journal entries saved on this device?")) {
+    return;
+  }
+
+  localStorage.removeItem(journalKey);
+  renderJournal();
+
+  document.getElementById("journalMessage").textContent =
+    "Journal entries cleared from this browser.";
+});
+
+renderJournal();
+
+
+/* ===== 4. CALM BREATHING EXERCISE ===== */
+let breathingTimer = null;
+let breathingStep = 0;
+
+const breathingPhases = [
+  { text: "Breathe in", status: "Gently breathe in, if comfortable.", scale: 1.15, duration: 4000 },
+  { text: "Breathe out", status: "Slowly breathe out without forcing it.", scale: 1, duration: 6000 }
+];
+
+function stopBreathing() {
+  if (breathingTimer !== null) {
+    clearTimeout(breathingTimer);
+    breathingTimer = null;
+  }
+
+  const circle = document.getElementById("breathingCircle");
+  circle.style.transform = "scale(1)";
+  document.getElementById("breathingText").textContent = "Ready?";
+  document.getElementById("breathingStatus").textContent =
+    "Paused. Continue whenever you're ready.";
+  document.getElementById("startBreathing").disabled = false;
+}
+
+function runBreathing() {
+  const phase = breathingPhases[breathingStep];
+
+  document.getElementById("breathingText").textContent = phase.text;
+  document.getElementById("breathingStatus").textContent = phase.status;
+  document.getElementById("breathingCircle").style.transform =
+    "scale(" + phase.scale + ")";
+
+  breathingStep = (breathingStep + 1) % breathingPhases.length;
+  breathingTimer = setTimeout(runBreathing, phase.duration);
+}
+
+document.getElementById("startBreathing").addEventListener("click", () => {
+  if (breathingTimer !== null) return;
+
+  breathingStep = 0;
+  document.getElementById("startBreathing").disabled = true;
+  runBreathing();
+});
+
+document.getElementById("stopBreathing").addEventListener("click", () => {
+  stopBreathing();
+  document.getElementById("startBreathing").disabled = false;
+});
+
+window.addEventListener("pagehide", () => {
+  if (breathingTimer !== null) {
+    clearTimeout(breathingTimer);
+    breathingTimer = null;
+  }
+});
+
+
+document.getElementById("adminMessage").textContent =
+  "Demo mode: live analytics and secure staff login are not connected yet.";
+
+</script>
+</body>
+</html>
